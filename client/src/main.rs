@@ -6,9 +6,9 @@ fn main() -> std::io::Result<()> {
 
     stream.write(b"Hello Server!")?;
     let mut buffer = [0; 20];
-    stream.read(&mut buffer)?;
+    let read_len = stream.read(&mut buffer)?;
 
-    println!("Received: {:#?}", buffer);
+    println!("Received: {:#?}\n Length: {}", buffer, read_len);
 
     Ok(())
 } // the stream is closed here
