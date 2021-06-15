@@ -4,12 +4,15 @@ use std::net::{TcpListener, TcpStream};
 fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
     println!("Connection from {}", stream.peer_addr()?);
 
-    let mut buffer = [0; 170];
-    let read_len = stream.read(&mut buffer)?;
+    loop {
 
-    println!("Received: {:#?}\n Length: {}", buffer, read_len);
-
-    stream.write(b"Hello Client!")?;
+        let mut buffer = [0; 20];
+        let read_len = stream.read(&mut buffer)?;
+        
+        println!("Received: {:#?}\n Length: {}", buffer, read_len);
+        
+        stream.write(b"Hello Client!")?;
+    }
 
     Ok(())
 }
