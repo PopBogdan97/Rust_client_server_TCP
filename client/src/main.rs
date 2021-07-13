@@ -1,18 +1,27 @@
 use std::io::prelude::*;
-use std::net::TcpStream;
-use std::{thread, time};
+use std::net::{TcpStream, Shutdown};
+use std::thread;
+use std::time::{Duration, Instant};
 
 fn main() -> std::io::Result<()> {
+    let tcp_start = Instant::now();
     let mut stream = TcpStream::connect("127.0.0.1:34254")?;
 
     loop {
-        stream.write(b"Hello Server!")?;
+        let w = [65; 2048];
+        stream.write(&w)?;
+        //stream.flush();
         let mut buffer = [0; 20];
         let read_len = stream.read(&mut buffer)?;
-        println!("Received: {:#?}\n Length: {}", buffer, read_len);
+        println!("Received: {:?}\n Length: {}", buffer, read_len);
+        let tcp_time = tcp_start.elapsed();
 
-        let millis = time::Duration::from_millis(1000);
+        println!("Time elapsed: {:?}", tcp_time);
 
+        //break;
+        let millis = Duration::from_millis(2000);
+        
+	    stream.shutdown(Shutdown::Both);
         thread::sleep(millis);
     }
 
